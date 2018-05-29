@@ -7,7 +7,6 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,11 +14,9 @@ import android.widget.Button;
 import android.widget.Toast;
 import android.support.design.widget.TabLayout;
 
-import com.skysearch.itm.skysearch.DB.DBHandler_schd;
 import com.skysearch.itm.skysearch.GridLayout.GridActivity;
 import com.skysearch.itm.skysearch.R;
-import com.skysearch.itm.skysearch.Server.NetworkThread;
-import com.skysearch.itm.skysearch.Server.ServerService;
+import com.skysearch.itm.skysearch.DAO.Client;
 
 public class StickyActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -28,12 +25,12 @@ public class StickyActivity extends AppCompatActivity implements View.OnClickLis
     private Button btn_switch;
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_main);
-        //Intent intent = new Intent(getApplicationContext(), ServerService.class); // 이동할 컴포넌트
-        //startService(intent);
+
 
         // DrawerToggle 보이게 하기
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -68,19 +65,6 @@ public class StickyActivity extends AppCompatActivity implements View.OnClickLis
         btn_switch = (Button) findViewById(R.id.switch_button2);
         btn_switch.setOnClickListener(StickyActivity.this);
 
-        String url = "http://211.211.54.158:3000/schd";
-        NetworkThread nt2 = new NetworkThread(url, null, "schd", getApplicationContext());
-        Log.i("NetworkThread::schd","create");
-        nt2.mainProcessing();
-        Log.i("NetworkThread::schd","run");
-        url = "http://211.211.54.158:3000/prog";
-        // AsyncTask를 통해 HttpURLConnection 수행.
-        //NetworkTask networkTask = new NetworkTask(url, null, "prog");
-        //networkTask.execute();
-        NetworkThread nt1 = new NetworkThread(url,null,"prog", getApplicationContext());
-        Log.i("NetworkThread::prog","create");
-        nt1.mainProcessing();
-        Log.i("NetworkThread::prog","run");
 
     }
 

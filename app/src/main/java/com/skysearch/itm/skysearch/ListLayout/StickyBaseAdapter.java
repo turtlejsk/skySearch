@@ -2,6 +2,7 @@ package com.skysearch.itm.skysearch.ListLayout;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,112 +13,61 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.skysearch.itm.skysearch.DB.DBHandler_schd;
+import com.skysearch.itm.skysearch.DTO.DTO_SCHD;
 import com.skysearch.itm.skysearch.R;
+import com.skysearch.itm.skysearch.Util.DateParser;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
+
+import static com.skysearch.itm.skysearch.Util.DateParser.compare;
 
 public class StickyBaseAdapter extends BaseAdapter implements  StickyListHeadersAdapter, SectionIndexer {
 
     private final Context mContext;
     private LayoutInflater mInflater;
-    private String[] mTimes;
-    private String[] mTitles;
-    private String[] mDates;
+
     private int[] mSectionIndices;
     private String[] mSectionDates;
     ArrayList<String> titles = new ArrayList<>();
     ArrayList<String> times = new ArrayList<>();
 
-    private ArrayList<Program> programList = new ArrayList<Program>() ;
+    List<DTO_SCHD> mList=null;
 
     private static final int ITEM_VIEW_TYPE_FUTURE = 0;
     private static final int ITEM_VIEW_TYPE_NOW = 1;
     private static final int ITEM_VIEW_TYPE_PAST = 2;
     private static final int ITEM_VIEW_TYPE_MAX = 3;
 
-    private static final String NOW_DATE = "2018년 5월 17일 목요일";
-    private static final String NOW_TIME = "15:00";
-    DBHandler_schd dbHandler_schd;
 
-    public StickyBaseAdapter(Context context) {
+
+    public StickyBaseAdapter(Context context, List<DTO_SCHD> tempList) {
         mContext = context;
         mInflater = LayoutInflater.from(context);
-        mTitles = context.getResources().getStringArray(R.array.JTBC_title);
-        mTimes = context.getResources().getStringArray(R.array.JTBC_time);
-        mDates = context.getResources().getStringArray(R.array.JTBC_date);
 
-        try {
-            dbHandler_schd = DBHandler_schd.open(mContext);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        String temp= null;
-        Cursor cursor =null;
-        try {
-            cursor=dbHandler_schd.select(101,"2018-02-16 00:00:00");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        if (cursor != null && cursor.getCount() != 0) {
-            while (!cursor.isAfterLast()) {
-                temp = cursor.getString(0);
-                titles.add(temp);
-                temp = cursor.getString(3);
-                times.add(temp);
-                cursor.moveToNext();
-            }
-        }
+        mList = tempList;
 
-        int indexNow=0;
-
-        for (int i = 0; i < mTimes.length ; i++) {
-            if ((mDates[i].equals(NOW_DATE)) && (mTimes[i].equals(NOW_TIME))) {
-                indexNow = i;
-            }
-        }
-
-        //times.get(i);
-
-        for (int i = 0; i < mTimes.length ; i++) {
-            if (i < indexNow) {
-                addItem(ITEM_VIEW_TYPE_PAST, mTimes[i], mTitles[i]);
-            } else if(i == indexNow) {
-                addItem(ITEM_VIEW_TYPE_NOW, mTitles[i]);
-            } else if(i > indexNow){
-                addItem(ITEM_VIEW_TYPE_FUTURE, mTimes[i], mTitles[i]);
-            }
+        for (int i = 0; i < mList.size() ; i++) {
+            int type = DateParser.compare(mList.get(i).getStTime());
+            mList.get(i).setType(type);
         }
 
         mSectionIndices = getSectionIndices();
         mSectionDates = getSectionDates();
     }
 
-    public void addItem(int type, String title) {
-        // 현재
-        Program program = new Program(type, title);
-        programList.add(program);
-    }
-
-    public void addItem(int type, String title, String time) {
-        Program program = null;
-
-        if(type == ITEM_VIEW_TYPE_FUTURE) { // 미래
-            program = new Program(type, title, time, false);
-        } else if(type == ITEM_VIEW_TYPE_PAST) { // 과거
-            program = new Program(type, title, time);
-        }
-        programList.add(program);
-    }
 
     // time의 첫번째 숫자가 작아졌을때 section 생김 14시 -> 18시 -> 23시 ->(섹션) -> 1시
     private int[] getSectionIndices() {
         ArrayList<Integer> sectionIndices = new ArrayList<Integer>();
         sectionIndices.add(0);
-        for (int i = 1; i < mTimes.length; i++) {
-            if (Integer.parseInt(String.valueOf(mTimes[i-1].charAt(0))) > Integer.parseInt(String.valueOf(mTimes[i].charAt(0)))) {
+        for (int i = 1; i < mList.size(); i++) {
+            if (DateParser.compare(mList.get(i).getStTime())-DateParser.compare(mList.get(i-1).getStTime())!=0) {
+                Log.d("getSectionIndice","add");
                 sectionIndices.add(i);
             }
         }
@@ -132,19 +82,20 @@ public class StickyBaseAdapter extends BaseAdapter implements  StickyListHeaders
     public String[] getSectionDates() {
         String[] dates = new String[mSectionIndices.length];
         for (int i = 0; i<mSectionIndices.length; i++) {
-            dates[i] = mDates[mSectionIndices[i]];
+            dates[i] = mList.get(mSectionIndices[i]).getStTime();
+            //Log.d("getSectionDates","add");
         }
         return dates;
     }
 
     @Override
     public int getCount() {
-        return programList.size();
+        return mList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return programList.get(position);
+        return mList.get(position);
     }
 
     @Override
@@ -154,7 +105,7 @@ public class StickyBaseAdapter extends BaseAdapter implements  StickyListHeaders
 
     @Override
     public int getItemViewType(int position) {
-        return programList.get(position).getType();
+        return mList.get(position).getType();
     }
 
     @Override
@@ -166,8 +117,8 @@ public class StickyBaseAdapter extends BaseAdapter implements  StickyListHeaders
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         final ViewHolder holder;
-        int viewType = getItemViewType(position);
-
+        int viewType = mList.get(position).getType();
+        Log.d("ViewTest",String.valueOf(mList.get(position).getType()));
         if (convertView == null) {
             holder = new ViewHolder();
             switch (viewType) {
@@ -176,16 +127,17 @@ public class StickyBaseAdapter extends BaseAdapter implements  StickyListHeaders
                     holder.timeText = (TextView) convertView.findViewById(R.id.time_textview);
                     holder.titleText = (TextView) convertView.findViewById(R.id.title_textview);
 
-                    holder.timeText.setText(programList.get(position).getTime());
-                    holder.titleText.setText(programList.get(position).getTitle());
+                    holder.timeText.setText(mList.get(position).getStTime());
 
+                    holder.titleText.setText(mList.get(position).getTitle());
+                    Log.d("ViewTest",mList.get(position).getTitle());
                     break;
 
                 case ITEM_VIEW_TYPE_NOW :
                     convertView = mInflater.inflate(R.layout.list_item_now, parent, false);
                     holder.titleText = (TextView) convertView.findViewById(R.id.title_textview);
 
-                    holder.titleText.setText(programList.get(position).getTitle());
+                    holder.titleText.setText(mList.get(position).getTitle());
 
                     break;
 
@@ -195,19 +147,19 @@ public class StickyBaseAdapter extends BaseAdapter implements  StickyListHeaders
                     holder.titleText = (TextView) convertView.findViewById(R.id.title_textview);
                     holder.reserveButton = (Button) convertView.findViewById(R.id.reserve_button);
 
-                    holder.timeText.setText(programList.get(position).getTime());
-                    holder.titleText.setText(programList.get(position).getTitle());
+                    holder.timeText.setText(mList.get(position).getStTime().substring(11,16));
+                    holder.titleText.setText(mList.get(position).getTitle());
                     holder.reserveButton.setOnClickListener(new Button.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (programList.get(position).getReserve()) {
+                            if (mList.get(position).isReserved()) {
                                 holder.reserveButton.setBackgroundResource(R.drawable.reserve_off);
-                                programList.get(position).setReserve(false);
+                                mList.get(position).setReserved(false);
                                 Toast.makeText(mContext, "예약이 취소되었습니다.", Toast.LENGTH_SHORT).show();
                                 return;
                             }
                             holder.reserveButton.setBackgroundResource(R.drawable.reserve_on);
-                            programList.get(position).setReserve(true);
+                            mList.get(position).setReserved(true);
                             Toast.makeText(mContext, "예약이 설정되었습니다.", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -220,6 +172,7 @@ public class StickyBaseAdapter extends BaseAdapter implements  StickyListHeaders
         }
         return convertView;
     }
+
 
     // header를 inflate, header에서 실제로 보여줄 것
     @Override
@@ -236,7 +189,7 @@ public class StickyBaseAdapter extends BaseAdapter implements  StickyListHeaders
         }
 
         // set header text as first char in name
-        CharSequence headerChar = mDates[position];
+        CharSequence headerChar = mList.get(position).getStTime().substring(0,10);
         holder.text.setText(headerChar);
 
         return convertView;
@@ -245,7 +198,8 @@ public class StickyBaseAdapter extends BaseAdapter implements  StickyListHeaders
     @Override
     public long getHeaderId(int position) { // 특정 item의 position을 보고 header id 반환
         // HeaderId가 같은 item들끼리 같은 section에 넣어버리므로, 같은 section에 들어갈 애들끼리 같은 id를 리턴해줘야해
-        return mDates[position].subSequence(10, 11).charAt(0); // date : 17일, 18일 -> header id : 7, 8
+        //Log.d("getHeader",mList.get(position).getStTime().substring(8,10));
+        return Integer.parseInt(mList.get(position).getStTime().substring(8,10)); // date : 17일, 18일 -> header id : 7, 8
     }
 
     @Override
