@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="JTBC_date">
+        <item>2018년 5월 17일 목요일</item>
+        <item>2018년 5월 17일 목요일</item>
+        <item>2018년 5월 17일 목요일</item>
+        <item>2018년 5월 17일 목요일</item>
+        <item>2018년 5월 17일 목요일</item>
+        <item>2018년 5월 17일 목요일</item>
+        <item>2018년 5월 17일 목요일</item>
+        <item>2018년 5월 18일 금요일</item>
+        <item>2018년 5월 18일 금요일</item>
+        <item>2018년 5월 18일 금요일</item>
+        <item>2018년 5월 18일 금요일</item>
+        <item>2018년 5월 18일 금요일</item>
+        <item>2018년 5월 18일 금요일</item>
+    </string-array>
+
+    <string-array name="JTBC_time">
+        <item>09:00</item>
+        <item>10:00</item>
+        <item>11:00</item>
+        <item>15:00</item>
+        <item>18:00</item>
+        <item>19:00</item>
+        <item>23:00</item>
+        <item>00:05</item>
+        <item>01:00</item>
+        <item>05:00</item>
+        <item>06:05</item>
+        <item>08:00</item>
+        <item>09:00</item>
+    </string-array>
+
+    <string-array name="JTBC_title">
+        <item>효리네 민박2 1회</item>
+        <item>효리네 민박2 2회</item>
+        <item>효리네 민박2 3회</item>
+        <item>뮤직뱅크 235회</item>
+        <item>효리네 민박2 4회</item>
+        <item>효리네 민박2 5회</item>
+        <item>효리네 민박2 6회</item>
+        <item>효리네 민박2 7회</item>
+        <item>효리네 민박2 8회</item>
+        <item>효리네 민박2 9회</item>
+        <item>효리네 민박2 10회</item>
+        <item>효리네 민박2 11회</item>
+        <item>효리네 민박2 12회</item>
+    </string-array>
+</resources>
