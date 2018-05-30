@@ -1,6 +1,4 @@
-package com.skysearch.itm.skysearch.Util;
-
-import android.util.Log;
+package com.skysearch.itm.skysearch.util;
 
 import java.text.DateFormat;
 import java.text.ParseException;

@@ -1,7 +1,6 @@
 package com.skysearch.itm.skysearch.ListLayout;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,29 +11,22 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.skysearch.itm.skysearch.DB.DBHandler_schd;
 import com.skysearch.itm.skysearch.DTO.DTO_SCHD;
 import com.skysearch.itm.skysearch.R;
-import com.skysearch.itm.skysearch.Util.DateParser;
+import com.skysearch.itm.skysearch.util.DateParser;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
-import static com.skysearch.itm.skysearch.Util.DateParser.compare;
-
-public class StickyBaseAdapter extends BaseAdapter implements  StickyListHeadersAdapter, SectionIndexer {
+public class StickyBaseAdapter extends BaseAdapter implements StickyListHeadersAdapter, SectionIndexer {
 
     private final Context mContext;
     private LayoutInflater mInflater;
 
     private int[] mSectionIndices;
     private String[] mSectionDates;
-    ArrayList<String> titles = new ArrayList<>();
-    ArrayList<String> times = new ArrayList<>();
 
     List<DTO_SCHD> mList=null;
 
@@ -182,7 +174,7 @@ public class StickyBaseAdapter extends BaseAdapter implements  StickyListHeaders
         if (convertView == null) {
             holder = new HeaderViewHolder();
             convertView = mInflater.inflate(R.layout.header, parent, false);
-            holder.text = (TextView) convertView.findViewById(R.id.header_text);
+            holder.setText((TextView) convertView.findViewById(R.id.header_text));
             convertView.setTag(holder);
         } else {
             holder = (HeaderViewHolder) convertView.getTag();
@@ -190,7 +182,7 @@ public class StickyBaseAdapter extends BaseAdapter implements  StickyListHeaders
 
         // set header text as first char in name
         CharSequence headerChar = mList.get(position).getStTime().substring(0,10);
-        holder.text.setText(headerChar);
+        holder.getText().setText(headerChar);
 
         return convertView;
     }
@@ -232,13 +224,22 @@ public class StickyBaseAdapter extends BaseAdapter implements  StickyListHeaders
         return mSectionDates;
     }
 
-    class HeaderViewHolder {
-        TextView text;
+    class ViewHolder{
+        public TextView timeText;
+        public TextView titleText;
+        public Button reserveButton;
+    }
+    class HeaderViewHolder{
+        private TextView text;
+
+        public TextView getText() {
+            return text;
+        }
+
+        public void setText(TextView text) {
+            this.text = text;
+        }
     }
 
-    class ViewHolder {
-        TextView timeText;
-        TextView titleText;
-        Button reserveButton;
-    }
+
 }

@@ -5,7 +5,6 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,8 @@ import com.google.gson.JsonObject;
 import com.skysearch.itm.skysearch.DTO.DTO_SCHD;
 import com.skysearch.itm.skysearch.R;
 import com.skysearch.itm.skysearch.Server.RetroService;
-import com.skysearch.itm.skysearch.Util.DateParser;
+import com.skysearch.itm.skysearch.adapter.StickyAdapter;
+import com.skysearch.itm.skysearch.util.DateParser;
 
 import java.util.ArrayList;
 
@@ -98,6 +98,7 @@ public class PlaceholderFragment extends Fragment implements
         stickyListHeadersListView.addHeaderView(FrameLayout.inflate(getContext(),R.layout.list_header, null));
         stickyListHeadersListView.addFooterView(FrameLayout.inflate(getContext(), R.layout.list_footer, null));
         stickyListHeadersListView.setAdapter(new StickyBaseAdapter(getContext(), list));
+        //stickyListHeadersListView.setAdapter(new StickyAdapter(getContext(), list));
         stickyListHeadersListView.setDrawingListUnderStickyHeader(true);
         stickyListHeadersListView.setAreHeadersSticky(true);
         stickyListHeadersListView.setOnItemClickListener(this);

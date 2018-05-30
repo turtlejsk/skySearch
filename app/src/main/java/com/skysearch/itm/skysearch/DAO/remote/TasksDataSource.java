@@ -1,15 +1,12 @@
-package com.skysearch.itm.skysearch.Server;
+package com.skysearch.itm.skysearch.DAO.remote;
 
 import com.google.gson.JsonArray;
 
-import org.json.JSONArray;
-
 import retrofit2.Call;
 import retrofit2.http.GET;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface RetroService {
+public interface TasksDataSource {
     //schd Table
 
     /*
@@ -30,6 +27,5 @@ public interface RetroService {
 
     @GET("prog/")
     Call<JsonArray> getProgByName(@Query("prog_name") String prog_name);
-
 
 }
