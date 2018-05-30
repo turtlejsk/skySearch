@@ -22,7 +22,6 @@ import com.skysearch.itm.skysearch.Server.RetroService;
 import com.skysearch.itm.skysearch.Util.DateParser;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -116,7 +115,7 @@ public class PlaceholderFragment extends Fragment implements
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://211.211.54.158:3000/").addConverterFactory(GsonConverterFactory.create()).build();
         RetroService service = retrofit.create(RetroService.class);
 
-        Call<JsonArray> req = service.getSchedule(101);
+        Call<JsonArray> req = service.getScheduleByCHid(101);
         req.enqueue(new Callback<JsonArray>() {
             @Override
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {

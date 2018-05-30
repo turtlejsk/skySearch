@@ -67,7 +67,7 @@ public class StickyBaseAdapter extends BaseAdapter implements  StickyListHeaders
         sectionIndices.add(0);
         for (int i = 1; i < mList.size(); i++) {
             if (DateParser.compare(mList.get(i).getStTime())-DateParser.compare(mList.get(i-1).getStTime())!=0) {
-                Log.d("getSectionIndice","add");
+                //Log.d("getSectionIndice","add");
                 sectionIndices.add(i);
             }
         }

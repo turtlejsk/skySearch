@@ -10,6 +10,28 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface RetroService {
+    //schd Table
+
+
+    /*
+       CH_id
+     * return 해당 채널 3일치 편성표 데이터
+    * */
     @GET("schd/")
-    Call<JsonArray> getSchedule(@Query("CH_id") int CH_id);
+    Call<JsonArray> getScheduleByCHid(@Query("CH_id") int CH_id);
+
+
+    /**
+     *
+     * @param title
+     * @return title이 포함된 편성표 데이터
+     */
+    @GET("schd/")
+    Call<JsonArray> getScheduleByTitle(@Query("Title") String title);
+
+
+    @GET("prog/")
+    Call<JsonArray> getProgByName(@Query("prog_name") String prog_name);
+
+
 }
